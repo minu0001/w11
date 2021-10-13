@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { io } from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,29 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'w11';
+  userName = '';
+  messageText!: string;
+  messages: Array<any> = [];
+  socket:any;
+  constructor() {
+    this.socket = io();
+  }
+  ngOnInit() {
+    this.messages = new Array();
+    this.listen2Events();
+  }
+  
+  listen2Events() {
+    this.socket.on("msg", (data: any) => {
+      this.messages.push(data);
+    });
+  }
+  sendMessage() {
+    this.socket.emit("newMsg", this.messageText);
+    this.messageText = "";
+  }
 }
+
+
+
+
